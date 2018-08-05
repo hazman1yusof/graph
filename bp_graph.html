@@ -24,7 +24,7 @@
 
 	$(function() {
 
-		var sistole=[],distole=[],pulse=[],temp=[];
+		var sistole=[],distole=[],pulse=[],temp=[],tick1=[];
 		fetch('file.txt')
 			.then(response => response.text())
 			.then(function(data){
@@ -40,7 +40,10 @@
 				var temp = obj.map(function(value,i){
 					return [i+1,value.temp];
 				});
-				doPlot(temp.length+1,sis_dis,pulse,temp);
+				var tick1 = obj.map(function(value,i){
+					return [i+1,value.tick1];
+				});
+				doPlot(temp.length+1,sis_dis,pulse,temp,tick1);
 			});
 
 		function drawArrow(ctx, x, y, radius){
@@ -60,7 +63,7 @@
 		}
 
 		var plot;
-		function doPlot(x,sis_dis,pulse,temp){
+		function doPlot(x,sis_dis,pulse,temp,tick1){
 			var data_points = {
 				//do not show points
 				radius: 0,
@@ -110,6 +113,20 @@
 					interactive: false
 				}
 			});
+
+			plot2 = $.plot($("#placeholder2"),[{color: "orange", points: {show:true}, data: tick1, label: "Temperature"}],{
+				xaxes: [{
+					min: 0.5,
+					max: x,
+					ticks: ticktengah(x)
+				}],
+				yaxes: [{
+					min: 0.5,
+					max: 4.5,
+					ticks: [0.5,1.5,2.5,3.5,4.5]
+				}],
+
+			});
 		}
 
 		$("<div id='tooltip'></div>").css({
@@ -124,6 +141,14 @@
 			"background-color": "#bababc",
 			opacity: 0.70
 		}).appendTo("body");
+
+		function ticktengah(tick){
+			var arr = [];
+			for(x=0;x<tick;x++){
+				arr.push([x+.5,'']);
+			}
+			return arr;
+		}
 
 		function updateLegend() {
 			updateLegendTimeout = null;
@@ -197,7 +222,8 @@
 	<div id="content">
 
 		<div class="demo-container">
-			<div id="placeholder" class="demo-placeholder"></div>
+			<div id="placeholder" class="demo-placeholder" style="height: 70%"></div>
+			<div id="placeholder2" class="demo-placeholder" style="height: 30%"></div>
 		</div>
 
 	</div>
