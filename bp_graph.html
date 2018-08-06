@@ -10,6 +10,7 @@
 	<script language="javascript" type="text/javascript" src="asset/flot/jquery.flot.errorbars.js"></script>
 	<script language="javascript" type="text/javascript" src="asset/flot/jquery.flot.navigate.js"></script>
 	<script language="javascript" type="text/javascript" src="asset/flot/jquery.flot.crosshair.js"></script>
+	<script language="javascript" type="text/javascript" src="asset/flot/jquery.flot.symbol.js"></script>
 	<script language="javascript" type="text/javascript" src="asset/jquery.csv.min.js"></script>
 
 	<style type="text/css">
@@ -17,14 +18,13 @@
 		.distole{color: blue}
 		.pulse{color: red}
 		.temp{color: orange}
-
 	</style>
 
 	<script type="text/javascript">
 
 	$(function() {
 
-		var sistole=[],distole=[],pulse=[],temp=[],tick1=[];
+		var sistole=[],distole=[],pulse=[],temp=[],tick1=[],time=[];
 		fetch('file.txt')
 			.then(response => response.text())
 			.then(function(data){
@@ -43,24 +43,11 @@
 				var tick1 = obj.map(function(value,i){
 					return [i+1,value.tick1];
 				});
+				var time = obj.map(function(value,i){
+					return [i+1,value.time];
+				});
 				doPlot(temp.length+1,sis_dis,pulse,temp,tick1);
 			});
-
-		function drawArrow(ctx, x, y, radius){
-			ctx.beginPath();
-			ctx.moveTo(x + radius, y + radius);
-			ctx.lineTo(x, y);
-			ctx.lineTo(x - radius, y + radius);
-			ctx.stroke();
-		}
-
-		function drawArrow2(ctx, x, y, radius){
-			ctx.beginPath();
-			ctx.moveTo(x + radius, y - radius);
-			ctx.lineTo(x, y);
-			ctx.lineTo(x - radius, y - radius);
-			ctx.stroke();
-		}
 
 		var plot;
 		function doPlot(x,sis_dis,pulse,temp,tick1){
@@ -78,13 +65,8 @@
 			];
 
 			plot = $.plot($("#placeholder"), data , {
-				legend: {
-					position: "sw",
-					show: true
-				},
-				crosshair: {
-					mode: "x"
-				},
+				legend: {position: "sw",show: true},
+				crosshair: {mode: "x"},
 				grid: {
 					hoverable: true,
 					autoHighlight: false
@@ -106,15 +88,10 @@
 							alignTicksWithAxis: 2,
 							position: 'right'
 						}],
-				zoom: {
-					interactive: false
-				},
-				pan: {
-					interactive: false
-				}
 			});
 
-			plot2 = $.plot($("#placeholder2"),[{color: "orange", points: {show:true}, data: tick1, label: "Temperature"}],{
+			plot2 = $.plot($("#placeholder2"),[{color: "black", points: {symbol:"cross",show:true}, data: tick1, label: "Best Motor Response"}],{
+				legend: {show: false},
 				xaxes: [{
 					min: 0.5,
 					max: x,
@@ -122,9 +99,16 @@
 				}],
 				yaxes: [{
 					min: 0.5,
-					max: 4.5,
-					ticks: [0.5,1.5,2.5,3.5,4.5]
+					max: 6.5,
+					ticks: [[0.5,"<span class='yaxis'>flaccid</br></br></span>"],
+							[1.5,"Extension</br></br>"],
+							[2.5,"Abnormal Flexion</br></br>"],
+							[3.5,"Flexor withdrawal</br></br>"],
+							[4.5,"Localise pain</br></br>"],
+							[5.5,"Obey commands</br></br>"],
+							[6.5," </br></br>"]]
 				}],
+				grid: {hoverable:true}
 
 			});
 		}
@@ -141,14 +125,6 @@
 			"background-color": "#bababc",
 			opacity: 0.70
 		}).appendTo("body");
-
-		function ticktengah(tick){
-			var arr = [];
-			for(x=0;x<tick;x++){
-				arr.push([x+.5,'']);
-			}
-			return arr;
-		}
 
 		function updateLegend() {
 			updateLegendTimeout = null;
@@ -200,7 +176,7 @@
 								+"</span><br/><b>Pulse: </b><span class='pulse'>"+pulse
 								+"</span><br/><b>Temperature: </b><span class='temp'>"+temp+"</span>")
 					.css({top: pos.pageY+20, left: pos.pageX+20})
-					.fadeIn(200);
+					.fadeIn(500);
 
 		}
 
@@ -213,17 +189,22 @@
 			}
 		});
 
+		$("#placeholder").mouseout(function() {
+			$("#tooltip").hide();
+		});
+
 	});
 
 	</script>
+	<script language="javascript" type="text/javascript" src="util.js"></script>
 </head>
 <body>
 
 	<div id="content">
 
 		<div class="demo-container">
-			<div id="placeholder" class="demo-placeholder" style="height: 70%"></div>
-			<div id="placeholder2" class="demo-placeholder" style="height: 30%"></div>
+			<div id="placeholder" class="demo-placeholder" style="height: 60%"></div>
+			<div id="placeholder2" class="demo-placeholder" style="height: 20%"></div>
 		</div>
 
 	</div>
