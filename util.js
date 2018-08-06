@@ -23,3 +23,11 @@ function drawArrow2(ctx, x, y, radius){
 	ctx.lineTo(x - radius, y - radius);
 	ctx.stroke();
 }
+
+function nbsp(i){
+	var str = "";
+	for(x=0;x<i;x++){
+		str = str+"&nbsp;";
+	}
+	return str;
+}
