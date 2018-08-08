@@ -1,9 +1,9 @@
 
 
-function ticktengah(tick){
+function ticktengah(tick,nbsp){
 	var arr = [];
 	for(x=0;x<tick;x++){
-		arr.push([x+.5,'']);
+		arr.push([x+.5,''+nbsp]);
 	}
 	return arr;
 }
@@ -30,4 +30,36 @@ function nbsp(i){
 		str = str+"&nbsp;";
 	}
 	return str;
+}
+
+function tick_time(tick,time){
+	var arr = [];
+	for(x=0;x<tick;x++){
+		let mom = moment(time[x][1], "YYYY-MM-DD HH:mm:ss");
+		arr.push([x+1.5,mom.format('h:m</br>a</br> D/M/YY')]);
+	}
+	return arr;
+}
+
+function xAxisReplot(){
+	let countertoplus = 0; 
+	let nbspmargin = 38;
+	$("#placeholder div.x1Axis").children('.tickLabel').each(function(index){
+
+		let left = parseInt($(this).css('left'));
+		if(index == 0){
+			countertoplus = left/2;
+		}
+		$(this).css('left',left-countertoplus+nbspmargin);
+		
+	});
+}
+
+function tick_yaxis(max,min,nbsp){
+	let tick = (max-min)/5;
+	var arr = [];
+	for(x=min;x<max;x+=5){
+		arr.push([x,x+nbsp]);
+	}
+	return arr;
 }
