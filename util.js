@@ -41,10 +41,10 @@ function tick_time(tick,time){
 	return arr;
 }
 
-function xAxisReplot(){
+function xAxisReplot(id){
 	let countertoplus = 0; 
 	let nbspmargin = 38;
-	$("#placeholder div.x1Axis").children('.tickLabel').each(function(index){
+	$(id).children('.tickLabel').each(function(index){
 
 		let left = parseInt($(this).css('left'));
 		if(index == 0){
@@ -59,7 +59,18 @@ function tick_yaxis(max,min,nbsp){
 	let tick = (max-min)/5;
 	var arr = [];
 	for(x=min;x<max;x+=5){
-		arr.push([x,x+nbsp]);
+		arr.push([x,nbsp+x]);
 	}
 	return arr;
+}
+
+function updRange(min,max){
+	$("#customRange2").attr('min',min);
+	$("#customRange2").attr('max',max);
+	$('#rangeshow').text($("#customRange2").val());
+	$('#rangemax').text(max);
+}
+
+function filterRange(array,range){
+	return array.slice(0,range);
 }
