@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Flot Examples: Error Bars</title>
+	<title>Blood Pressure Plot</title>
 	<link href="asset/css/examples.css" rel="stylesheet" type="text/css">
 	<link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../../excanvas.min.js"></script><![endif]-->
@@ -20,9 +20,27 @@
 		.sistole{color: blue}
 		.diastole{color: blue}
 		.pulse{color: red}
-		.temp{color: orange}
-
-		#placeholder2 .y1Axis{
+		.temp{color: darkorange}
+		.legendtepi{position:absolute;left:-200px;color:#666;font-size:small;
+			-webkit-transform: rotate(270deg);
+			-moz-transform: rotate(270deg);
+			-o-transform: rotate(270deg);
+			writing-mode: lr-tb;
+			width: 40%;
+		}
+		#tooltip hr { 
+		    display: block;
+		    margin-top: 0px;
+		    margin-bottom: 0px;
+		    margin-left: auto;
+		    margin-right: auto;
+		    border-style: inset;
+		    border-color: black;
+		} 
+		#placeholder{
+			line-height: 1;
+		}
+		#placeholder2 .y1Axis, #placeholder3 .y1Axis{
 			line-height: 1;
 		}
 
@@ -122,16 +140,27 @@
 						}
 						return accum;
 					},[]);
+					console.log(time)
+
+					var painScore = obj.reduce(function(accum,value,i){
+						if(all){ accum.push([i+1,value.painScore]); }
+						else{
+							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
+							if(mom.isBetween(datefr_,dateto_,'day','[]')){
+								accum.push([i+1,value.painScore]);
+							}
+						}
+						return accum;
+					},[]);
 					updRange(0,time.length);
 
-					doPlot(x = parseInt(range+1),sis_dis = filterRange(sis_dis,range),pulse = filterRange(pulse,range),temp = filterRange(temp,range),tick1 = filterRange(tick1,range),tick2 = filterRange(tick2,range),time = filterRange(time,range));
+					doPlot(x = parseInt(range+1),sis_dis = filterRange(sis_dis,range),pulse = filterRange(pulse,range),temp = filterRange(temp,range),tick1 = filterRange(tick1,range),tick2 = filterRange(tick2,range),time = filterRange(time,range), painScore = filterRange(painScore,range));
 					xAxisReplot("#placeholder div.x1Axis");
 				});
 		}
 
 		var plot;
-		function doPlot(x,sis_dis,pulse,temp,tick1,tick2,time){
-
+		function doPlot(x,sis_dis,pulse,temp,tick1,tick2,time,painScore){
 			x = parseInt(range)+1;
 			
 			var data_points = {
@@ -144,26 +173,31 @@
 			var data = [
 				{color: "blue", lines: {show: false}, points: data_points, data: sis_dis, label: "Blood Pressure", yaxis: 1},
 				{color: "red", lines: {show: true, lineWidth: 0.5}, points: {show:true}, data: pulse, label: "Pulse", yaxis: 1},
-				{color: "orange", lines: {show: true, lineWidth: 1}, points: {show:true}, data: temp, label: "Temperature", yaxis: 2}
+				{color: "orange", lines: {show: true, lineWidth: 1}, points: {show:true}, data: temp, label: "Temperature", yaxis: 2},
+				{lines: {show: false}, data: painScore},
+				{lines: {show: false}, data: tick1},
+				{lines: {show: false}, data: tick2},
+				{lines: {show: false}, data: time}
 			];
 
 			plot = $.plot($("#placeholder"), data , {
-				legend: {show: true},
+				legend: {show: false},
 				crosshair: {mode: "x"},
 				grid: {
 					hoverable: true,
-					autoHighlight: false
+					autoHighlight: false,
+					markings: markings()
 				},
 				xaxes: [{
 					min: 0.5,
 					max: x-.5,
-					ticks: tick_time(x-1,time),
+					ticks: tick_y(x-1),
 					position: 'top'
 				}],
 				yaxes: [{
-							min: 30,
-							max: 180,
-							ticks: tick_yaxis(180,30,nbsp(17))
+							min: 30-20,
+							max: 180+20,
+							ticks: tick_yaxis(180,30-20,nbsp(17),placeholder1 = true)
 						},{
 							// align if we are to the right
 							min: -35,
@@ -173,6 +207,9 @@
 							position: 'right'
 						}],
 			});
+			plot_pain_score(plot,painScore);
+			plot_time_date(plot,time);
+			legend_tepi(plot);
 
 			plot2 = $.plot($("#placeholder2"),[{color: "black", points: {symbol:"cross",show:true}, data: tick1, label: "Best Motor Response"}],{
 				legend: {show: true},
@@ -196,7 +233,7 @@
 
 			});
 
-			plot4 = $.plot($("#placeholder4"),[{color: "black", points: {symbol:"cross",show:true}, data: tick1, label: "Best Motor Response"}],{
+			plot3 = $.plot($("#placeholder3"),[{color: "black", points: {symbol:"cross",show:true}, data: tick2, label: "Best Verbal Response"}],{
 				legend: {show: true},
 				xaxes: [{
 					min: 0.5,
@@ -205,39 +242,17 @@
 				}],
 				yaxes: [{
 					min: 0.5,
-					max: 6.5,
-					ticks: [[0.5,"flaccid</br></br>"],
-							[1.5,"Extension</br></br>"],
-							[2.5,"Abnormal</br>Flexion</br></br>"],
-							[3.5,"Flexor</br>withdrawal</br></br></br>"],
-							[4.5,"Localise pain</br></br></br>"],
-							[5.5,"Obey</br>commands</br></br></br>"],
-							[6.5,""]]
+					max: 5.5,
+					ticks: [[0.5,"None</br></br>"],
+							[1.5,"Incomprehe</br>nsble Sound</br></br>"],
+							[2.5,"Inappro<br>priate Words</br></br>"],
+							[3.5,"Confused</br></br>"],
+							[4.5,"Oriented</br></br>"],
+							[5.5,""]]
 				}],
 				grid: {hoverable:true}
 
 			});
-
-			// plot2 = $.plot($("#placeholder3"),[{color: "black", points: {symbol:"cross",show:true}, data: tick2, label: "Best Verbal Response"}],{
-			// 	legend: {show: true},
-			// 	xaxes: [{
-			// 		min: 0.5,
-			// 		max: x-.5,
-			// 		ticks: ticktengah(x,nbsp(10))
-			// 	}],
-			// 	yaxes: [{
-			// 		min: 0.5,
-			// 		max: 5.5,
-			// 		ticks: [[0.5,"None</br></br>"],
-			// 				[1.5,"Incomprehensible</br>Sounds</br></br>"],
-			// 				[2.5,"Inappropriate<br>Words</br></br>"],
-			// 				[3.5,"Confused</br></br>"],
-			// 				[4.5,"Oriented</br></br>"],
-			// 				[5.5,""]]
-			// 	}],
-			// 	grid: {hoverable:true}
-
-			// });
 		}
 
 		$("<div id='tooltip'></div>").css({
@@ -280,15 +295,24 @@
 				arr[i] = y;
 			}
 
-			var sistole = parseFloat(arr[0][1]) + parseFloat(arr[0][2]),
+			let sistole = parseFloat(arr[0][1]) + parseFloat(arr[0][2]),
 				diastole = parseFloat(arr[0][1]) -  parseFloat(arr[0][2]),
 				pulse = arr[1][1];
 				temp = arr[2][1];
+				painScore = arr[3][1];
+				tick1 = arr[4][1];
+				tick2 = arr[5][1];
+				date = arr[6][1];
 
-			$("#tooltip").html(`<b>Sistole: </b><span class='sistole'>`+sistole
+			$("#tooltip").html(`<b>Date: </b><span class='Date'>`+date+`<hr>`
+								+`</span><b>Sistole: </b><span class='sistole'>`+sistole
 								+`</span><br/><b>Diastole: </b><span class='diastole'>`+diastole
 								+`</span><br/><b>Pulse: </b><span class='pulse'>`+pulse
-								+`</span><br/><b>Temperature: </b><span class='temp'>`+temp+`</span>`)
+								+`</span><br/><b>Temperature: </b><span class='temp'>`+temp
+								+`</span><br/><b>Pain Score: </b><span>`+painScore
+								+`</span><br/><b>Best Motor Response: </b><span>`+tick1
+								+`</span><br/><b>Best Verbal Response: </b><span>`+tick2
+								+`</span>`)
 					.css({top: pos.pageY+20, left: pos.pageX+20})
 					.fadeIn(500);
 
@@ -347,13 +371,30 @@
 					<br>
 					<button class="btn btn-primary float-right" type="button" id="filter">Filter</button></div>
 			</div>
+			<hr>
+			<div class="row">
+				<div class="col-2">
+					<b>MRN</b>: 100000010
+				</div>
+				<div class="col-4">
+					<b>Name</b>: KHALID BASALAMAH
+				</div>
+				<div class="col-2">
+					<b>Age</b>: 45
+				</div>
+				<div class="col-2">
+					<b>Race</b>: Malay
+				</div>
+				<div class="col-2">
+					<b>Ward/Bed</b>: Jade 503
+				</div>
+			</div>
 		</form>
 
 		<div class="demo-container">
-			<div id="placeholder" class="demo-placeholder" style="height: 60%"></div>
+			<div id="placeholder" class="demo-placeholder" style="height: 80%"></div>
 			<div id="placeholder2" class="demo-placeholder" style="height: 20%; margin-top: -26px"></div>
-			<div id="placeholder4" class="demo-placeholder" style="height: 20%; margin-top: -26px"></div>
-			<!-- <div id="placeholder3" class="demo-placeholder" style="height: 20%"></div> -->
+			<!-- <div id="placeholder3" class="demo-placeholder" style="height: 20%; margin-top: -34px"></div> -->
 		</div>
 
 	</div>
