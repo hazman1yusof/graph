@@ -1,0 +1,2 @@
+"mrn","name","sex","telno","ward","bed","age","race","religion"
+10000101,Khalid Bin Basalamah,Male,011-23456789,Jade,310,44,Malay,Islam

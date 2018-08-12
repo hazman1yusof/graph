@@ -55,6 +55,21 @@
 			$("#rangeshow").text($("#customRange2").val());
 		});
 
+		fetchBio();
+		function fetchBio(){
+			fetch('bio.txt')
+				.then(response => response.text())
+				.then(function(data){
+					var obj = $.csv.toObjects(data)[0];
+					for (var prop in obj) {
+				        if(!obj.hasOwnProperty(prop)) continue;
+				        $('#'+prop).text(obj[prop]);
+				    }
+
+
+				});
+		}
+
 		function fetchdata(all,datefr_,dateto_,range){
 			fetch('file.txt')
 				.then(response => response.text())
@@ -140,7 +155,6 @@
 						}
 						return accum;
 					},[]);
-					console.log(time)
 
 					var painScore = obj.reduce(function(accum,value,i){
 						if(all){ accum.push([i+1,value.painScore]); }
@@ -374,27 +388,41 @@
 			<hr>
 			<div class="row">
 				<div class="col-2">
-					<b>MRN</b>: 100000010
+					<b>MRN</b>: <span id="mrn"></span>
+				</div>
+				<div class="col-6">
+					<b>Name</b>: <span id="name"></span>
+				</div>
+				<div class="col-2">
+					<b>Sex</b>: <span id="sex"></span>
+				</div>
+				<div class="col-2">
+					<b>Age</b>: <span id="age"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-2">
+					<b>Religion</b>: <span id="religion"></span>
 				</div>
 				<div class="col-4">
-					<b>Name</b>: KHALID BASALAMAH
+					<b>Telephone</b>: <span id="telno"></span>
 				</div>
 				<div class="col-2">
-					<b>Age</b>: 45
+					<b>Race</b>: <span id="race"></span>
 				</div>
 				<div class="col-2">
-					<b>Race</b>: Malay
+					<b>Ward</b>: <span id="ward"></span>
 				</div>
 				<div class="col-2">
-					<b>Ward/Bed</b>: Jade 503
+					<b>Bed</b>: <span id="bed"></span>
 				</div>
 			</div>
 		</form>
 
 		<div class="demo-container">
-			<div id="placeholder" class="demo-placeholder" style="height: 80%"></div>
+			<div id="placeholder" class="demo-placeholder" style="height: 60%"></div>
 			<div id="placeholder2" class="demo-placeholder" style="height: 20%; margin-top: -26px"></div>
-			<!-- <div id="placeholder3" class="demo-placeholder" style="height: 20%; margin-top: -34px"></div> -->
+			<div id="placeholder3" class="demo-placeholder" style="height: 20%; margin-top: -34px"></div>
 		</div>
 
 	</div>
