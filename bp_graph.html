@@ -70,113 +70,137 @@
 				});
 		}
 
-		function fetchdata(all,datefr_,dateto_,range){
+		var datefr_ = $('#datefr').val();
+		var dateto_ = $('#dateto').val();
+		function fetchdata(all,range){
+
+			let dateChange = false;
+			if(datefr_ != $('#datefr').val() || dateto_ != $('#dateto').val()){
+				datefr_ = $('#datefr').val();
+				dateto_ = $('#dateto').val();
+				dateChange = true;
+			}
+
 			fetch('file.txt')
 				.then(response => response.text())
 				.then(function(data){
 					var obj = $.csv.toObjects(data);
 
-					// obj = array.sort(function(a,b){
-					// 		let a_ = moment(a.time, "YYYY-MM-DD HH:mm:ss");
-					// 		let b_ = moment(b.time, "YYYY-MM-DD HH:mm:ss");
-					// 		if (sort_o1_before_o2)    return -1;
-					// 		else if(sort_o1_after_o2) return  1;
-					// 		else                      return  0;
-					// 		return new Date(b.date) - new Date(a.date);
-					// 	});
-
 					var sis_dis = obj.reduce(function(accum,value,i){
 						let diff = (parseFloat(value.sistole) - parseFloat(value.diastole)) / 2;
 						let center = parseFloat(value.sistole) - parseFloat(diff);
+						let arr = accum.arr,index = accum.i;
 
 						if(all){
-							accum.push([i+1,center,diff]);
+							arr.push([index+1,center,diff]);
+							accum.i+=1; 
 						}else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,center,diff]);
+								arr.push([index+1,center,diff]);
+								accum.i+=1; 
 							}
 						}
 						return accum;
 
-					},[]);
+					},{arr:[],i:0}).arr;
+					console.log(sis_dis)
 
 					var pulse = obj.reduce(function(accum,value,i){
-						if(all){ accum.push([i+1,value.pulse]); }
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.pulse]); accum.i+=1;}
 						else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,value.pulse]);
+								arr.push([index+1,value.pulse]); accum.i+=1;
 							}
 						}
 						return accum;
-					},[]);
+					},{arr:[],i:0}).arr;
+					console.log(pulse)
 
 					var temp = obj.reduce(function(accum,value,i){
-						if(all){ accum.push([i+1,value.temp]); }
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.temp]); accum.i+=1;}
 						else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,value.temp]);
+								arr.push([index+1,value.temp]); accum.i+=1;
 							}
 						}
 						return accum;
-					},[]);
+					},{arr:[],i:0}).arr;
 
 					var tick1 = obj.reduce(function(accum,value,i){
-						if(all){ accum.push([i+1,value.tick1]); }
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.tick1]); accum.i+=1;}
 						else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,value.tick1]);
+								arr.push([index+1,value.tick1]); accum.i+=1;
 							}
 						}
 						return accum;
-					},[]);
+					},{arr:[],i:0}).arr;
 
 					var tick2 = obj.reduce(function(accum,value,i){
-						if(all){ accum.push([i+1,value.tick2]); }
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.tick2]); accum.i+=1;}
 						else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,value.tick2]);
+								arr.push([index+1,value.tick2]); accum.i+=1;
 							}
 						}
 						return accum;					
-					},[]);
+					},{arr:[],i:0}).arr;
+
+					var tick3 = obj.reduce(function(accum,value,i){
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.tick3]); accum.i+=1;}
+						else{
+							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
+							if(mom.isBetween(datefr_,dateto_,'day','[]')){
+								arr.push([index+1,value.tick3]); accum.i+=1;
+							}
+						}
+						return accum;					
+					},{arr:[],i:0}).arr;
 
 					var time = obj.reduce(function(accum,value,i){
-						if(all){ accum.push([i+1,value.time]); }
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.time]); accum.i+=1;}
 						else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,value.time]);
+								arr.push([index+1,value.time]); accum.i+=1;
 							}
 						}
 						return accum;
-					},[]);
+					},{arr:[],i:0}).arr;
 
 					var painScore = obj.reduce(function(accum,value,i){
-						if(all){ accum.push([i+1,value.painScore]); }
+						let arr = accum.arr,index = accum.i;
+						if(all){ arr.push([index+1,value.painScore]); accum.i+=1;}
 						else{
 							let mom = moment(value.time, "YYYY-MM-DD HH:mm:ss");
 							if(mom.isBetween(datefr_,dateto_,'day','[]')){
-								accum.push([i+1,value.painScore]);
+								arr.push([index+1,value.painScore]); accum.i+=1;
 							}
 						}
 						return accum;
-					},[]);
-					updRange(0,time.length);
+					},{arr:[],i:0}).arr;
 
-					doPlot(x = parseInt(range+1),sis_dis = filterRange(sis_dis,range),pulse = filterRange(pulse,range),temp = filterRange(temp,range),tick1 = filterRange(tick1,range),tick2 = filterRange(tick2,range),time = filterRange(time,range), painScore = filterRange(painScore,range));
+					range = (dateChange)?time.length:range;
+					updRange(0,time.length,range);
+
+					doPlot(x = parseInt(range)+1,sis_dis = filterRange(sis_dis,range),pulse = filterRange(pulse,range),temp = filterRange(temp,range),tick1 = filterRange(tick1,range),tick2 = filterRange(tick2,range),tick3 = filterRange(tick3,range),time = filterRange(time,range), painScore = filterRange(painScore,range));
 					xAxisReplot("#placeholder div.x1Axis");
 				});
 		}
 
 		var plot;
-		function doPlot(x,sis_dis,pulse,temp,tick1,tick2,time,painScore){
-			x = parseInt(range)+1;
-			
+		function doPlot(x,sis_dis,pulse,temp,tick1,tick2,tick3,time,painScore){
 			var data_points = {
 				//do not show points
 				radius: 0,
@@ -200,7 +224,7 @@
 				grid: {
 					hoverable: true,
 					autoHighlight: false,
-					markings: markings()
+					markings: markings1()
 				},
 				xaxes: [{
 					min: 0.5,
@@ -223,50 +247,50 @@
 			});
 			plot_pain_score(plot,painScore);
 			plot_time_date(plot,time);
-			legend_tepi(plot);
+			legend_tepi1(plot);
 
-			plot2 = $.plot($("#placeholder2"),[{color: "black", points: {symbol:"cross",show:true}, data: tick1, label: "Best Motor Response"}],{
-				legend: {show: true},
+			var data2 = [
+				{color: "black", points: {symbol:"cross",show:true}, data: tick1, label: "Best Motor Response"},
+				{color: "black", points: {symbol:"cross",show:true}, data: accum_more_tick(tick2,6), label: "Best Verbal Response"},
+				{color: "black", points: {symbol:"cross",show:true}, data: accum_more_tick(tick3,11), label: "tick3"}
+			]
+
+			plot2 = $.plot($("#placeholder2"),data2,{
+				legend: {show: false},
+				grid: {
+					hoverable:true,
+					markings: markings2()
+				},
 				xaxes: [{
 					min: 0.5,
 					max: x-.5,
 					ticks: ticktengah(x,nbsp(10))
 				}],
 				yaxes: [{
-					min: 0.5,
-					max: 6.5,
-					ticks: [[0.5,"flaccid</br></br>"],
-							[1.5,"Extension</br></br>"],
-							[2.5,"Abnormal</br>Flexion</br></br>"],
-							[3.5,"Flexor</br>withdrawal</br></br></br>"],
-							[4.5,"Localise pain</br></br></br>"],
-							[5.5,"Obey</br>commands</br></br></br>"],
-							[6.5,""]]
-				}],
-				grid: {hoverable:true}
+					min: -0.5,
+					max: 14.5,
+					ticks: [
+							[-0.5,"<b>Total</b></br></br></br>"],
+							[0.5,"flaccid</br></br></br>"],
+							[1.5,"Extension</br></br></br>"],
+							[2.5,"Abnormal</br>Flexion</br></br></br>"],
+							[3.5,"Flexor</br>withdrawal</br></br></br></br>"],
+							[4.5,"Localise pain</br></br></br></br>"],
+							[5.5,"Obey</br>commands</br></br></br></br>"],
+							[6.5,"None</br></br></br>"],
+							[7.5,"Incomprehe</br>nsible Sound</br></br></br>"],
+							[8.5,"Inappro<br>priate Words</br></br></br>"],
+							[9.5,"Confused</br></br></br>"],
+							[10.5,"Oriented</br></br></br>"],
+							[11.5,"tick3_1</br></br></br>"],
+							[12.5,"tick3_2</br></br></br>"],
+							[13.5,"tick3_3</br></br></br>"],
+							[14.5,""]]
+				}]
 
 			});
-
-			plot3 = $.plot($("#placeholder3"),[{color: "black", points: {symbol:"cross",show:true}, data: tick2, label: "Best Verbal Response"}],{
-				legend: {show: true},
-				xaxes: [{
-					min: 0.5,
-					max: x-.5,
-					ticks: ticktengah(x,nbsp(10))
-				}],
-				yaxes: [{
-					min: 0.5,
-					max: 5.5,
-					ticks: [[0.5,"None</br></br>"],
-							[1.5,"Incomprehe</br>nsble Sound</br></br>"],
-							[2.5,"Inappro<br>priate Words</br></br>"],
-							[3.5,"Confused</br></br>"],
-							[4.5,"Oriented</br></br>"],
-							[5.5,""]]
-				}],
-				grid: {hoverable:true}
-
-			});
+			plot_total(plot2,total_tick(tick1,tick2,tick3));
+			legend_tepi2(plot2);
 		}
 
 		$("<div id='tooltip'></div>").css({
@@ -345,11 +369,10 @@
 			$("#tooltip").hide();
 		});
 
-		fetchdata(document.getElementById('showall').checked,datefr_=datefr,dateto_=dateto,range=$("#customRange2").val());
+		fetchdata(document.getElementById('showall').checked,$("#customRange2").val());
+
 		$('#filter').click(function(){
-			let datefr = $('#datefr').val();
-			let dateto = $('#dateto').val();
-			fetchdata(document.getElementById('showall').checked,datefr_=datefr,dateto_=dateto,range=$("#customRange2").val());
+			fetchdata(document.getElementById('showall').checked,$("#customRange2").val());
 		});
 
 	});
@@ -421,8 +444,7 @@
 
 		<div class="demo-container">
 			<div id="placeholder" class="demo-placeholder" style="height: 60%"></div>
-			<div id="placeholder2" class="demo-placeholder" style="height: 20%; margin-top: -26px"></div>
-			<div id="placeholder3" class="demo-placeholder" style="height: 20%; margin-top: -34px"></div>
+			<div id="placeholder2" class="demo-placeholder" style="height: 40%; margin-top: -34px"></div>
 		</div>
 
 	</div>
