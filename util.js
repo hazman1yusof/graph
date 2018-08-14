@@ -130,7 +130,7 @@ function markings1(){
 
 function markings2(){
 	var markings = [
-		{ color: "#f6f6f6", yaxis: { from: 14.5} },
+		{ color: "#f6f6f6", yaxis: { from: 15.5} },
 		{ color: "#f6f6f6", yaxis: { to: 0.5} },
 		{ color: "#000", lineWidth: 2, yaxis: { from: 11.5, to: 11.5 } },
 		{ color: "#000", lineWidth: 2, yaxis: { from: 6.5, to: 6.5 } },
@@ -194,7 +194,7 @@ function legend_tepi2(plot){
 					<b>Best Verbal Response</b>
 				</div>
 				<div class="col-3">
-					<b>Best tick3 Response</b>
+					<b>Eyes Open</b>
 				</div>
 			</div>`;
 

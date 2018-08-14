@@ -215,6 +215,7 @@
 				{lines: {show: false}, data: painScore},
 				{lines: {show: false}, data: tick1},
 				{lines: {show: false}, data: tick2},
+				{lines: {show: false}, data: tick3},
 				{lines: {show: false}, data: time}
 			];
 
@@ -240,7 +241,7 @@
 							// align if we are to the right
 							min: -35,
 							max: 60,
-							ticks: tick_yaxis(-35,60,nbsp(0)),
+							ticks: tick_yaxis(180,30-20,nbsp(17),placeholder1 = true),
 							alignTicksWithAxis: 3,
 							position: 'right'
 						}],
@@ -268,7 +269,7 @@
 				}],
 				yaxes: [{
 					min: -0.5,
-					max: 14.5,
+					max: 15.5,
 					ticks: [
 							[-0.5,"<b>Total</b></br></br></br>"],
 							[0.5,"flaccid</br></br></br>"],
@@ -282,10 +283,11 @@
 							[8.5,"Inappro<br>priate Words</br></br></br>"],
 							[9.5,"Confused</br></br></br>"],
 							[10.5,"Oriented</br></br></br>"],
-							[11.5,"tick3_1</br></br></br>"],
-							[12.5,"tick3_2</br></br></br>"],
-							[13.5,"tick3_3</br></br></br>"],
-							[14.5,""]]
+							[11.5,"None</br></br></br>"],
+							[12.5,"To Pain</br></br></br>"],
+							[13.5,"To Speech</br></br></br>"],
+							[14.5,"Spontaneous</br></br></br>"],
+							[15.5,""]]
 				}]
 
 			});
@@ -340,7 +342,8 @@
 				painScore = arr[3][1];
 				tick1 = arr[4][1];
 				tick2 = arr[5][1];
-				date = arr[6][1];
+				tick3 = arr[6][1];
+				date = arr[7][1];
 
 			$("#tooltip").html(`<b>Date: </b><span class='Date'>`+date+`<hr>`
 								+`</span><b>Sistole: </b><span class='sistole'>`+sistole
@@ -350,6 +353,7 @@
 								+`</span><br/><b>Pain Score: </b><span>`+painScore
 								+`</span><br/><b>Best Motor Response: </b><span>`+tick1
 								+`</span><br/><b>Best Verbal Response: </b><span>`+tick2
+								+`</span><br/><b>Eyes Open: </b><span>`+tick3
 								+`</span>`)
 					.css({top: pos.pageY+20, left: pos.pageX+20})
 					.fadeIn(500);
