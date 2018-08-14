@@ -72,7 +72,7 @@
 
 		var datefr_ = $('#datefr').val();
 		var dateto_ = $('#dateto').val();
-		function fetchdata(all,range){
+		function fetchdata(all,range,firstPlot=false){
 
 			let dateChange = false;
 			if(datefr_ != $('#datefr').val() || dateto_ != $('#dateto').val()){
@@ -104,7 +104,6 @@
 						return accum;
 
 					},{arr:[],i:0}).arr;
-					console.log(sis_dis)
 
 					var pulse = obj.reduce(function(accum,value,i){
 						let arr = accum.arr,index = accum.i;
@@ -117,7 +116,6 @@
 						}
 						return accum;
 					},{arr:[],i:0}).arr;
-					console.log(pulse)
 
 					var temp = obj.reduce(function(accum,value,i){
 						let arr = accum.arr,index = accum.i;
@@ -191,7 +189,7 @@
 						return accum;
 					},{arr:[],i:0}).arr;
 
-					range = (dateChange)?time.length:range;
+					range = (dateChange||firstPlot)?time.length:range;
 					updRange(0,time.length,range);
 
 					doPlot(x = parseInt(range)+1,sis_dis = filterRange(sis_dis,range),pulse = filterRange(pulse,range),temp = filterRange(temp,range),tick1 = filterRange(tick1,range),tick2 = filterRange(tick2,range),tick3 = filterRange(tick3,range),time = filterRange(time,range), painScore = filterRange(painScore,range));
@@ -241,7 +239,7 @@
 							// align if we are to the right
 							min: -35,
 							max: 60,
-							ticks: tick_yaxis(180,30-20,nbsp(17),placeholder1 = true),
+							ticks: 30,
 							alignTicksWithAxis: 3,
 							position: 'right'
 						}],
@@ -253,7 +251,8 @@
 			var data2 = [
 				{color: "black", points: {symbol:"cross",show:true}, data: tick1, label: "Best Motor Response"},
 				{color: "black", points: {symbol:"cross",show:true}, data: accum_more_tick(tick2,6), label: "Best Verbal Response"},
-				{color: "black", points: {symbol:"cross",show:true}, data: accum_more_tick(tick3,11), label: "tick3"}
+				{color: "black", points: {symbol:"cross",show:true}, data: accum_more_tick(tick3,11), label: "tick3"},
+				{lines: {show: false}, data: temp, yaxis: 2}
 			]
 
 			plot2 = $.plot($("#placeholder2"),data2,{
@@ -288,6 +287,12 @@
 							[13.5,"To Speech</br></br></br>"],
 							[14.5,"Spontaneous</br></br></br>"],
 							[15.5,""]]
+				},{
+							// align if we are to the right
+							min: 1,
+							max: 2,
+							ticks: tick_yaxis(2,1,nbsp(6)),
+							position: 'right'
 				}]
 
 			});
@@ -373,7 +378,7 @@
 			$("#tooltip").hide();
 		});
 
-		fetchdata(document.getElementById('showall').checked,$("#customRange2").val());
+		fetchdata(document.getElementById('showall').checked,$("#customRange2").val(),firstPlot=true);
 
 		$('#filter').click(function(){
 			fetchdata(document.getElementById('showall').checked,$("#customRange2").val());

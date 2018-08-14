@@ -54,7 +54,7 @@ function xAxisReplot(id){
 	});
 }
 
-function tick_yaxis(max,min,nbsp,placeholder1){
+function tick_yaxis(max,min,nbsp,placeholder1=false){
 	let tick = (max-min)/5;
 	var arr = [];
 	if(placeholder1 == true){
@@ -76,9 +76,10 @@ function tick_yaxis(max,min,nbsp,placeholder1){
 
 	}else{
 		for(x=min;x<max;x+=5){
-			arr.push([x,nbsp+x]);
+			arr.push([x,nbsp]);
 		}
 	}
+	console.log(arr)
 	return arr;
 }
 
